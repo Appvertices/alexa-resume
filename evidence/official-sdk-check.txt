@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "official_sdk_test_executed": true,
+  "sdk": "mcp",
+  "sdk_version": "2.3.0",
+  "scope": "Local initialize, ping, tools, errors, isolation, checkpoint restore."
+}

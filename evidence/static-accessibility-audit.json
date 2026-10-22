@@ -1,0 +1,32 @@
+{
+  "scope": "Static source audit only; not browser, screen-reader, zoom, mobile or WCAG certification. Dynamic labels reviewed in source, not executed DOM.",
+  "checks": {
+    "html_language": true,
+    "main_landmark": true,
+    "unique_static_ids": true,
+    "static_fields_have_labels": true,
+    "live_status_and_error": true,
+    "visible_focus_css": true,
+    "skip_link": true,
+    "responsive_breakpoint": true,
+    "sampled_text_contrast_4_5": true
+  },
+  "contrast_samples": [
+    {
+      "foreground": "#193d38",
+      "background": "#f4f1e8",
+      "ratio": 10.53
+    },
+    {
+      "foreground": "#ffffff",
+      "background": "#204f43",
+      "ratio": 9.29
+    },
+    {
+      "foreground": "#496158",
+      "background": "#fffdf7",
+      "ratio": 6.59
+    }
+  ],
+  "all_checked_pass": true
+}

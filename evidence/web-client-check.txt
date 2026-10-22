@@ -1,0 +1,6 @@
+PASS: controls and mutations wait for initialization
+PASS: same-tab reload preserves session and progress
+PASS: independent client has independent progress
+PASS: expired session clears token, retains checkpoint, blocks writes without replay
+PASS: failed action and refresh resolve without an unhandled rejection
+5 client-logic checks passed; rendered browser QA NOT RUN.

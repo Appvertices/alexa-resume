@@ -1,0 +1,55 @@
+test_boolean_version_rejected (test_domain.RoutineTests.test_boolean_version_rejected) ... ok
+test_checkpoint_requires_confirmation_and_rejects_bad_states (test_domain.RoutineTests.test_checkpoint_requires_confirmation_and_rejects_bad_states) ... ok
+test_checkpoint_restores_in_new_session (test_domain.RoutineTests.test_checkpoint_restores_in_new_session) ... ok
+test_defer_not_complete (test_domain.RoutineTests.test_defer_not_complete) ... ok
+test_invalid_initialize_params (test_domain.RoutineTests.test_invalid_initialize_params) ... ok
+test_negated_completion_does_not_advance (test_domain.RoutineTests.test_negated_completion_does_not_advance) ... ok
+test_negative_hypothetical_and_future_commands_do_not_advance (test_domain.RoutineTests.test_negative_hypothetical_and_future_commands_do_not_advance) ... ok
+test_pause_resume_preserves_place (test_domain.RoutineTests.test_pause_resume_preserves_place) ... ok
+test_punctuation_and_everyday_phrases (test_domain.RoutineTests.test_punctuation_and_everyday_phrases) ... ok
+test_reset_requires_confirmation (test_domain.RoutineTests.test_reset_requires_confirmation) ... ok
+test_routine_switch_requires_confirmation (test_domain.RoutineTests.test_routine_switch_requires_confirmation) ... ok
+test_rpc_lifecycle_and_call (test_domain.RoutineTests.test_rpc_lifecycle_and_call) ... ok
+test_stale_mutation_rejected (test_domain.RoutineTests.test_stale_mutation_rejected) ... ok
+test_undo (test_domain.RoutineTests.test_undo) ... ok
+test_undo_skips_noop_pause_and_resume (test_domain.RoutineTests.test_undo_skips_noop_pause_and_resume) ... ok
+test_unknown_no_mutation (test_domain.RoutineTests.test_unknown_no_mutation) ... ok
+test_host_rebinding_rejected (test_http.HTTPContract.test_host_rebinding_rejected) ... ok
+test_html_security_headers (test_http.HTTPContract.test_html_security_headers) ... ok
+test_invalid_json_rejected (test_http.HTTPContract.test_invalid_json_rejected) ... ok
+test_missing_json_type_rejected (test_http.HTTPContract.test_missing_json_type_rejected) ... ok
+test_origin_rejected (test_http.HTTPContract.test_origin_rejected) ... ok
+test_session_isolation (test_http.HTTPContract.test_session_isolation) ... ok
+test_state_has_no_live_integration (test_http.HTTPContract.test_state_has_no_live_integration) ... ok
+test_static_source_hidden (test_http.HTTPContract.test_static_source_hidden) ... ok
+test_traversal_rejected (test_http.HTTPContract.test_traversal_rejected) ... ok
+test_unknown_action_rejected (test_http.HTTPContract.test_unknown_action_rejected) ... ok
+test_full_session_without_browser_cookie (test_mcp.MCPWire.test_full_session_without_browser_cookie) ... ok
+test_negotiated_session_supplies_missing_protocol_version (test_mcp.MCPWire.test_negotiated_session_supplies_missing_protocol_version) ... ok
+test_schema_rejects_boolean_version_and_extra_arguments (test_mcp.MCPWire.test_schema_rejects_boolean_version_and_extra_arguments) ... ok
+test_unknown_session_rejected (test_mcp.MCPWire.test_unknown_session_rejected) ... ok
+test_checkpoint_roundtrip_between_independent_clients (test_protocol_regressions.ProtocolRegressions.test_checkpoint_roundtrip_between_independent_clients) ... ok
+test_delete_invalidates_session (test_protocol_regressions.ProtocolRegressions.test_delete_invalidates_session) ... ok
+test_delete_validates_origin_missing_and_expired_session (test_protocol_regressions.ProtocolRegressions.test_delete_validates_origin_missing_and_expired_session) ... ok
+test_expired_session_is_not_replaced (test_protocol_regressions.ProtocolRegressions.test_expired_session_is_not_replaced) ... ok
+test_get_405_is_supported_json_only_behavior (test_protocol_regressions.ProtocolRegressions.test_get_405_is_supported_json_only_behavior) ... ok
+test_ids_and_envelopes_are_validated (test_protocol_regressions.ProtocolRegressions.test_ids_and_envelopes_are_validated) ... ok
+test_initialize_negotiates_supported_version (test_protocol_regressions.ProtocolRegressions.test_initialize_negotiates_supported_version) ... ok
+test_initialize_requires_capabilities_and_client_info (test_protocol_regressions.ProtocolRegressions.test_initialize_requires_capabilities_and_client_info) ... ok
+test_initialize_with_a_cookie_still_creates_independent_session (test_protocol_regressions.ProtocolRegressions.test_initialize_with_a_cookie_still_creates_independent_session) ... ok
+test_invalid_accept_cannot_exhaust_session_capacity (test_protocol_regressions.ProtocolRegressions.test_invalid_accept_cannot_exhaust_session_capacity) ... ok
+test_lifecycle_requires_initialized_notification_before_tools (test_protocol_regressions.ProtocolRegressions.test_lifecycle_requires_initialized_notification_before_tools) ... ok
+test_notification_and_client_response_are_accepted_without_body (test_protocol_regressions.ProtocolRegressions.test_notification_and_client_response_are_accepted_without_body) ... ok
+test_notification_cannot_execute_a_mutating_tool (test_protocol_regressions.ProtocolRegressions.test_notification_cannot_execute_a_mutating_tool) ... ok
+test_parse_error_has_jsonrpc_error_envelope (test_protocol_regressions.ProtocolRegressions.test_parse_error_has_jsonrpc_error_envelope) ... ok
+test_ping_during_initialization (test_protocol_regressions.ProtocolRegressions.test_ping_during_initialization) ... ok
+test_request_named_initialized_does_not_hang_client (test_protocol_regressions.ProtocolRegressions.test_request_named_initialized_does_not_hang_client) ... ok
+test_session_header_is_required_even_with_cookie (test_protocol_regressions.ProtocolRegressions.test_session_header_is_required_even_with_cookie) ... ok
+test_tool_maxlength_counts_whitespace_before_mutation (test_protocol_regressions.ProtocolRegressions.test_tool_maxlength_counts_whitespace_before_mutation) ... ok
+test_unknown_method_and_execution_error_are_distinct (test_protocol_regressions.ProtocolRegressions.test_unknown_method_and_execution_error_are_distinct) ... ok
+test_wrong_protocol_header_rejected_without_mutation (test_protocol_regressions.ProtocolRegressions.test_wrong_protocol_header_rejected_without_mutation) ... ok
+
+----------------------------------------------------------------------
+Ran 50 tests in 5.890s
+
+OK
