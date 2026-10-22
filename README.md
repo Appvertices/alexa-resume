@@ -1,36 +1,94 @@
-# Resume
+<p align="center">
+  <img src="docs/images/banner.jpg" alt="Resume — come back without starting over" width="100%">
+</p>
 
-**Come back to an everyday routine without starting over.**
+<h1 align="center">Resume</h1>
 
-Resume is an Alexa+ experience built on a self-hosted [Model Context Protocol](https://modelcontextprotocol.io) server. It guides a short routine one step at a time and keeps your place when life interrupts: pause, ask "where was I?", set a step aside without pretending it's done, undo a mistake, and carry your progress in a checkpoint file you own.
+<p align="center">
+  <b>Come back to an everyday routine without starting over.</b><br>
+  An Alexa+ experience built on a self-hosted <a href="https://modelcontextprotocol.io">Model Context Protocol</a> server.
+</p>
 
-Built for the **Build, Ship, Shape: Amazon Developer Hackathon**, Alexa+ track.
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=uP-_tGptZLw"><img alt="Watch the demo" src="https://img.shields.io/badge/demo-watch%20on%20YouTube-ff0000?logo=youtube&logoColor=white"></a>
+  <img alt="MCP 2025-11-25" src="https://img.shields.io/badge/MCP-2025--11--25-2f6b52">
+  <img alt="Streamable HTTP" src="https://img.shields.io/badge/transport-Streamable%20HTTP-2f6b52">
+  <img alt="Official MCP SDK check passing" src="https://img.shields.io/badge/official%20MCP%20SDK-passing-3fb950">
+  <img alt="50 tests passing" src="https://img.shields.io/badge/tests-50%20passing-3fb950">
+  <img alt="Python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-3776ab?logo=python&logoColor=white">
+  <img alt="Zero dependencies" src="https://img.shields.io/badge/dependencies-none-555">
+  <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue"></a>
+</p>
 
-- **Demo video:** _link to be added_
-- **MCP spec:** 2025-11-25, Streamable HTTP
-- **Verified with:** the official MCP Python SDK (2.3.0) and 50 automated tests
-- **Runtime dependencies:** none. Python standard library plus plain HTML, CSS and JavaScript.
-
-> Resume is a simulated Alexa+ experience: a web page acts as a real MCP client for a self-hosted MCP server. It runs entirely on your machine. No Alexa device, speech service or cloud model is connected, and no data leaves the computer.
+<p align="center">
+  <a href="#-demo">Demo</a> ·
+  <a href="#-quick-start">Quick start</a> ·
+  <a href="#-how-it-works">How it works</a> ·
+  <a href="#-mcp-tools">MCP tools</a> ·
+  <a href="#-testing">Testing</a>
+</p>
 
 ---
 
-## Why
+Resume guides a short routine one step at a time and keeps your place when life interrupts. Pause, ask **"where was I?"**, set a step aside without pretending it's done, undo a mistake, and carry your progress in a checkpoint file you own.
+
+Built for the **Build, Ship, Shape: Amazon Developer Hackathon**, Alexa+ track.
+
+> [!NOTE]
+> Resume is a simulated Alexa+ experience: a web page acts as a real MCP client for a self-hosted MCP server. It runs entirely on your machine. No Alexa device, speech service or cloud model is connected, and no data leaves the computer.
+
+## 🎬 Demo
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=uP-_tGptZLw">
+    <img src="docs/images/demo-thumbnail.jpg" alt="Watch the Resume demo on YouTube (1:44)" width="80%">
+  </a>
+  <br>
+  <sub>1:44 · animated walkthrough plus the real app, recorded locally · <a href="https://www.youtube.com/watch?v=uP-_tGptZLw">Watch on YouTube</a></sub>
+</p>
+
+## 💡 Why
 
 An interruption — a phone call, a knock at the door — can break a routine's flow and make the next step unclear. Most checklists either restart from the top or quietly lose your place. Resume keeps every step's state visible and makes recovery reversible, so getting back on track takes one question instead of starting over.
 
-## Features
+## ✨ Features
 
-- **One step at a time.** The main view shows only the next action. The full routine stays visible alongside it.
-- **Pause and resume.** Pausing keeps your exact place. Type "where was I?" or press Resume to pick up again.
-- **Set aside is never "done".** Deferred steps are tracked separately and come back when you resume.
-- **Undo.** Any change can be reversed. Actions that change nothing never use up an undo.
-- **Safe with words.** Short typed phrases are understood. When the classifier is unsure — including negations like "not done" — it asks instead of guessing, and nothing changes.
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="docs/images/where-was-i.jpg" alt="Asking where was I after a pause">
+      <p><b>Pause, then ask "where was I?"</b><br>Pausing keeps your exact place. One question brings you back to the next step.</p>
+    </td>
+    <td width="50%" valign="top">
+      <img src="docs/images/asks-instead-of-guessing.jpg" alt="The app asks instead of guessing when it is unsure">
+      <p><b>Asks instead of guessing</b><br>When a phrase is unclear, including negations like "not done", it asks, and nothing changes.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="docs/images/set-aside.jpg" alt="A step set aside and marked not complete">
+      <p><b>Set aside is never "done"</b><br>Deferred steps are tracked separately and come back when you resume. Undo reverses any change.</p>
+    </td>
+    <td width="50%" valign="top">
+      <img src="docs/images/home.jpg" alt="The Resume home screen">
+      <p><b>One next step, full routine alongside</b><br>Three sample routines: Out the door, Start a focused session, Close the workday.</p>
+    </td>
+  </tr>
+</table>
+
 - **Portable checkpoints.** Download your progress as a small JSON file and restore it in a fresh session, with explicit confirmation.
-- **Three sample routines:** Out the door, Start a focused session, Close the workday.
-- **Accessible basics:** keyboard operable with visible focus, a skip link, live status announcements, and a responsive layout down to phone width.
+- **Undo that you can trust.** Any change can be reversed, and actions that change nothing never use up an undo.
+- **Accessible basics.** Keyboard operable with visible focus, a skip link, live status announcements, and a responsive layout down to phone width.
 
-## Quick start
+<p align="center">
+  <img src="docs/images/mobile.jpg" alt="Resume on a phone" width="260">
+  &nbsp;&nbsp;&nbsp;
+  <img src="docs/images/mcp-trace.jpg" alt="MCP trace panel showing tool calls with zero external calls" width="300">
+  <br>
+  <sub>Phone layout · the built-in trace: every turn is an MCP tool call with <code>external_calls: 0</code></sub>
+</p>
+
+## 🚀 Quick start
 
 Requires **Python 3.10 or newer**. Nothing else to install.
 
@@ -54,21 +112,15 @@ Open **http://127.0.0.1:8011** in a browser. Press Ctrl+C to stop the server. To
 
 Phrases it understands include `done`, `pause`, `stop`, `where was I?`, `I'm back`, `what's next?`, `skip`, `later`, `undo`, `go back`, and `start over`.
 
-## How it works
+## 🧭 How it works
 
-```
-Browser page (MCP client)
-   │  JSON-RPC 2.0 over Streamable HTTP · MCP 2025-11-25
-   ▼
-Self-hosted MCP server (server.py, Python standard library)
-   │  initialize · tools/list · tools/call
-   ▼
-Routine engine (domain.py) + local intent classifier (adapters.py)
-```
+<p align="center">
+  <img src="docs/images/architecture.jpg" alt="Architecture: browser MCP client, self-hosted MCP server, routine engine" width="100%">
+</p>
 
 The page runs the full MCP lifecycle: `initialize`, `notifications/initialized`, `tools/list`, then a `tools/call` for every button press or typed phrase. Each call returns the complete routine state, and the trace panel ("How this simulation works") shows every turn with `"external_calls": 0`.
 
-### MCP tools
+## 🛠 MCP tools
 
 | Tool | Arguments | What it does |
 |---|---|---|
@@ -108,7 +160,7 @@ async def main():
 asyncio.run(main())
 ```
 
-## Testing
+## ✅ Testing
 
 ```bash
 python3 -m unittest discover -s tests -v    # 50 tests: routine rules, HTTP security, MCP wire protocol
@@ -128,7 +180,7 @@ python3 -m venv .venv-sdk
 
 Latest result: **PASS** with `mcp` 2.3.0 (see `evidence/official-sdk-check.txt`). Exit code 77 means the SDK is not installed (BLOCKED), not a failure.
 
-## Project structure
+## 📁 Project structure
 
 ```
 server.py          HTTP transport: MCP endpoint, sessions, static files, security headers
@@ -138,9 +190,10 @@ static/            Web client: MCP client logic, UI and styles
 tests/             Unit, HTTP, MCP wire-protocol and regression tests; SDK and client checks
 verify_local.py    One-command verification; writes results to evidence/
 evidence/          Latest verification output
+docs/images/       Screenshots and diagrams used in this README
 ```
 
-## Limitations
+## ⚠️ Limitations
 
 - This is a prototype, not a production service. State lives in memory and is cleared when the server restarts, unless you export a checkpoint.
 - The intent classifier is intentionally small. It handles short phrases from a fixed vocabulary, not open conversation. The buttons always work.
@@ -148,6 +201,6 @@ evidence/          Latest verification output
 - The development server is single-threaded and meant for local use only. Do not expose it on a public interface.
 - There has been no user study, and no measured-outcome claims are made.
 
-## License
+## 📄 License
 
 [MIT](LICENSE)
