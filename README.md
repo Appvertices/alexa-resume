@@ -10,6 +10,7 @@
 </p>
 
 <p align="center">
+  <a href="https://appvertices.github.io/alexa-resume/"><img alt="Try it live" src="https://img.shields.io/badge/try%20it-live%20in%20your%20browser-7ed6a8?logo=github&logoColor=white"></a>
   <a href="https://www.youtube.com/watch?v=uP-_tGptZLw"><img alt="Watch the demo" src="https://img.shields.io/badge/demo-watch%20on%20YouTube-ff0000?logo=youtube&logoColor=white"></a>
   <img alt="MCP 2025-11-25" src="https://img.shields.io/badge/MCP-2025--11--25-2f6b52">
   <img alt="Streamable HTTP" src="https://img.shields.io/badge/transport-Streamable%20HTTP-2f6b52">
@@ -33,6 +34,8 @@
 Resume guides a short routine one step at a time and keeps your place when life interrupts. Pause, ask **"where was I?"**, set a step aside without pretending it's done, undo a mistake, and carry your progress in a checkpoint file you own.
 
 Built for the **Build, Ship, Shape: Amazon Developer Hackathon**, Alexa+ track.
+
+**▶ Try it live: [appvertices.github.io/alexa-resume](https://appvertices.github.io/alexa-resume/)**. This free browser demo runs the project's unchanged `server.py` inside your browser (Pyodide). The page's MCP requests go to it in memory instead of over the network. For the real Streamable HTTP server, use the [quick start](#-quick-start).
 
 > [!NOTE]
 > Resume is a simulated Alexa+ experience: a web page acts as a real MCP client for a self-hosted MCP server. It runs entirely on your machine. No Alexa device, speech service or cloud model is connected, and no data leaves the computer.
@@ -114,7 +117,9 @@ Phrases it understands include `done`, `pause`, `stop`, `where was I?`, `I'm bac
 
 ## 🌐 Deploy a live demo
 
-Resume runs on any host that can start a Python process. [Render](https://render.com)'s free tier works with no build step and no packages to install.
+**Browser demo (free, already live):** [`docs/index.html`](docs/index.html) is served by GitHub Pages at https://appvertices.github.io/alexa-resume/. It loads `server.py`, `domain.py`, `adapters.py` and `static/` from the reviewed commit and runs them in the browser with Pyodide. Nothing to deploy and no server to keep awake.
+
+**Full HTTP server:** Resume runs on any host that can start a Python process. [Render](https://render.com)'s free tier works with no build step and no packages to install.
 
 **Render (one click):** [Deploy to Render](https://render.com/deploy?repo=https://github.com/Appvertices/alexa-resume) uses the included [`render.yaml`](render.yaml). Or create a **Web Service** from this repository with:
 
