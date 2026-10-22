@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Resume — live browser demo</title>
+<style>
+  #demo-bar { position: sticky; top: 0; z-index: 10; background: #10221c; color: #f4f1e8; font: 14px/1.4 system-ui, sans-serif;
+    padding: 10px 16px; text-align: center; }
+  #demo-bar a { color: #7ed6a8; }
+  #demo-loading { font: 18px system-ui, sans-serif; color: #193d38; text-align: center; padding: 80px 16px; }
+</style>
+</head>
+<body>
+<div id="demo-bar">
+  Browser demo: the project's real <code>server.py</code> runs inside your browser (via Pyodide), and the page's MCP requests go to it in memory instead of over the network.
+  For the Streamable HTTP server, <a href="https://github.com/Appvertices/alexa-resume#-quick-start">run it locally</a> ·
+  <a href="https://www.youtube.com/watch?v=uP-_tGptZLw">Demo video</a> · <a href="https://github.com/Appvertices/alexa-resume">Source</a>
+</div>
+<div id="demo-loading" role="status">Starting the Python MCP server in your browser… (first load takes a few seconds)</div>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.27.2/full/pyodide.js"></script>
+<script>
+// Source files come from the exact reviewed GitHub commit.
+const SRC = "https://raw.githubusercontent.com/Appvertices/alexa-resume/2f343e501b4e139928fefa430a3211390355861d/";
+const text = path => fetch(SRC + path).then(r => { if (!r.ok) throw Error(path + " " + r.status); return r.text(); });
+
+const BRIDGE = `
+import io, json
+from server import make_handler
+Handler = make_handler()
+
+class _Conn:
+    def __init__(self, raw): self.r, self.out = io.BytesIO(raw), io.BytesIO()
+    def makefile(self, mode, *_a, **_k): return self.r
+    def sendall(self, data): self.out.write(data)
+
+class _Server:
+    server_port = 8011
+
+def handle(method, headers_json, body):
+    # Feed one HTTP request to the unchanged server.py handler and return its raw response.
+    body = body.encode()
+    head = f"{method} /mcp HTTP/1.1\\r\\n" + "".join(f"{k}: {v}\\r\\n" for k, v in json.loads(headers_json).items())
+    conn = _Conn((head + f"Content-Length: {len(body)}\\r\\n\\r\\n").encode() + body)
+    Handler(conn, ("127.0.0.1", 0), _Server())
+    status_line, _, rest = conn.out.getvalue().partition(b"\\r\\n")
+    raw_headers, _, payload = rest.partition(b"\\r\\n\\r\\n")
+    headers = dict(line.split(": ", 1) for line in raw_headers.decode().split("\\r\\n") if ": " in line)
+    return json.dumps({"status": int(status_line.split()[1]), "headers": headers, "body": payload.decode()})
+`;
+
+(async () => {
+  try {
+    const py = await loadPyodide();
+    for (const f of ["server.py", "domain.py", "adapters.py"]) py.FS.writeFile(f, await text(f));
+    py.runPython(BRIDGE);
+    const handle = py.globals.get("handle");
+
+    const realFetch = window.fetch.bind(window);
+    window.fetch = async (url, opts = {}) => {
+      if (new URL(url, location.href).pathname.endsWith("/mcp")) {
+        const headers = Object.fromEntries(new Headers(opts.headers || {}));
+        headers["host"] = "127.0.0.1:8011";  // the in-browser server sees a local request
+        const r = JSON.parse(handle(opts.method || "GET", JSON.stringify(headers), opts.body || ""));
+        const empty = r.status === 202 || r.body === "";
+        return new Response(empty ? null : r.body, { status: r.status, headers: r.headers });
+      }
+      return realFetch(url, opts);
+    };
+
+    const [html, css, js] = await Promise.all(["static/index.html", "static/style.css", "static/app.js"].map(text));
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const style = document.createElement("style"); style.textContent = css; document.head.append(style);
+    document.getElementById("demo-loading").remove();
+    document.body.append(...doc.body.childNodes);
+    const script = document.createElement("script"); script.textContent = js; document.body.append(script);
+  } catch (e) {
+    document.getElementById("demo-loading").textContent = "The browser demo could not start (" + e.message + "). Try reloading, or run it locally from the GitHub README.";
+  }
+})();
+</script>
+</body>
+</html>
