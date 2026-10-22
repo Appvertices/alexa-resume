@@ -14,7 +14,7 @@
   <img alt="MCP 2025-11-25" src="https://img.shields.io/badge/MCP-2025--11--25-2f6b52">
   <img alt="Streamable HTTP" src="https://img.shields.io/badge/transport-Streamable%20HTTP-2f6b52">
   <img alt="Official MCP SDK check passing" src="https://img.shields.io/badge/official%20MCP%20SDK-passing-3fb950">
-  <img alt="50 tests passing" src="https://img.shields.io/badge/tests-50%20passing-3fb950">
+  <img alt="52 tests passing" src="https://img.shields.io/badge/tests-52%20passing-3fb950">
   <img alt="Python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-3776ab?logo=python&logoColor=white">
   <img alt="Zero dependencies" src="https://img.shields.io/badge/dependencies-none-555">
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue"></a>
@@ -112,6 +112,21 @@ Open **http://127.0.0.1:8011** in a browser. Press Ctrl+C to stop the server. To
 
 Phrases it understands include `done`, `pause`, `stop`, `where was I?`, `I'm back`, `what's next?`, `skip`, `later`, `undo`, `go back`, and `start over`.
 
+## 🌐 Deploy a live demo
+
+Resume runs on any host that can start a Python process. [Render](https://render.com)'s free tier works with no build step and no packages to install.
+
+**Render (one click):** [Deploy to Render](https://render.com/deploy?repo=https://github.com/Appvertices/alexa-resume) uses the included [`render.yaml`](render.yaml). Or create a **Web Service** from this repository with:
+
+| Setting | Value |
+|---|---|
+| Runtime | Python 3 |
+| Build command | `echo "No build step"` |
+| Start command | `python server.py --host 0.0.0.0` |
+| Instance type | Free |
+
+Render provides `PORT` and `RENDER_EXTERNAL_HOSTNAME`, and the server picks both up automatically. It then accepts only that hostname over HTTPS, plus localhost. On another host, set `PUBLIC_HOST` to your domain, or pass `--public-host your.domain`. Free instances sleep when idle, so the first visit can take up to a minute to wake.
+
 ## 🧭 How it works
 
 <p align="center">
@@ -136,7 +151,7 @@ Every state-changing call carries the `version` it was based on, so a stale or d
 - **Endpoint:** `POST /mcp` with JSON responses. `GET /mcp` returns 405 (no server-initiated stream); `DELETE /mcp` ends a session.
 - **Sessions:** issued on `initialize` through the `MCP-Session-Id` header. They are kept in memory and expire after one hour of inactivity.
 - **Protocol version:** negotiated at `initialize`. An `MCP-Protocol-Version` header, when sent, must match `2025-11-25`, and mismatches are rejected before any state changes.
-- **Local-only by design:** the server binds to `127.0.0.1` and rejects requests whose `Host` or `Origin` is not loopback. It sends security headers, including a strict Content-Security-Policy.
+- **Local-only by default:** the server binds to `127.0.0.1` and rejects requests whose `Host` or `Origin` is not loopback. A hosted demo can allow exactly one extra public hostname over HTTPS (see [Deploy a live demo](#-deploy-a-live-demo)). It sends security headers, including a strict Content-Security-Policy.
 
 ### Connect your own MCP client
 
@@ -163,7 +178,7 @@ asyncio.run(main())
 ## ✅ Testing
 
 ```bash
-python3 -m unittest discover -s tests -v    # 50 tests: routine rules, HTTP security, MCP wire protocol
+python3 -m unittest discover -s tests -v    # 52 tests: routine rules, HTTP security, MCP wire protocol
 node --check static/app.js                  # JavaScript syntax
 python3 verify_local.py                     # everything above, plus client-logic checks and a static accessibility audit
 ```
@@ -189,6 +204,7 @@ adapters.py        Small local intent classifier for short typed phrases
 static/            Web client: MCP client logic, UI and styles
 tests/             Unit, HTTP, MCP wire-protocol and regression tests; SDK and client checks
 verify_local.py    One-command verification; writes results to evidence/
+render.yaml        Render Blueprint for a free hosted demo
 evidence/          Latest verification output
 docs/images/       Screenshots and diagrams used in this README
 ```
@@ -198,7 +214,7 @@ docs/images/       Screenshots and diagrams used in this README
 - This is a prototype, not a production service. State lives in memory and is cleared when the server restarts, unless you export a checkpoint.
 - The intent classifier is intentionally small. It handles short phrases from a fixed vocabulary, not open conversation. The buttons always work.
 - It is a typed web simulation: no voice input, no Alexa device and no cross-device sync.
-- The development server is single-threaded and meant for local use only. Do not expose it on a public interface.
+- The server is a small standard-library HTTP server, fine for local use and a low-traffic demo, not a production service. A hosted demo keeps all sessions in one process's memory, so a restart clears them.
 - There has been no user study, and no measured-outcome claims are made.
 
 ## 📄 License

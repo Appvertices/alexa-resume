@@ -1,10 +1,12 @@
-"""Loopback-only development server; no external network calls."""
+"""Local server by default; optionally serves one public hostname (e.g. a Render demo). No external network calls."""
 import argparse
 import json
+import os
 import secrets
+import threading
 import time
 from http.cookies import SimpleCookie
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlsplit
 from domain import Engine, PROTOCOL_VERSION, message_kind, rpc_error
@@ -15,10 +17,12 @@ SESSION_TTL = 3600
 MAX_SESSIONS = 100
 
 
-def make_handler():
+def make_handler(public_host=None):
     # Browser REST cookies must never substitute for an MCP session header.
     sessions = {}
     mcp_sessions = {}
+    # ponytail: one lock for all session state; per-session locks if a public demo ever gets busy.
+    state_lock = threading.Lock()
 
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *_):
@@ -26,9 +30,11 @@ def make_handler():
 
         def allowed(self):
             allowed = {f"127.0.0.1:{self.server.server_port}", f"localhost:{self.server.server_port}"}
+            origins = {"http://" + h for h in allowed}
+            if public_host:  # the one public hostname, served over HTTPS by the hosting proxy
+                allowed.add(public_host); origins.add("https://" + public_host)
             origin = self.headers.get("Origin")
-            return (self.headers.get("Host") in allowed
-                    and (origin is None or origin in {"http://" + h for h in allowed}))
+            return self.headers.get("Host") in allowed and (origin is None or origin in origins)
 
         def prune(self, store):
             now = time.monotonic()
@@ -99,7 +105,8 @@ def make_handler():
                                     headers={"Allow": "POST, DELETE"})
             if path == "/api/state":
                 try:
-                    return self.respond(200, self.session().snapshot())
+                    with state_lock:
+                        return self.respond(200, self.session().snapshot())
                 except ValueError as exc:
                     return self.respond(503, {"error": str(exc)})
             assets = {"/": ("index.html", "text/html"), "/app.js": ("app.js", "text/javascript"), "/style.css": ("style.css", "text/css")}
@@ -113,10 +120,11 @@ def make_handler():
                 return self.respond(403, {"error": "Local host/origin only."})
             if urlsplit(self.path).path != "/mcp":
                 return self.respond(404, {"error": "Not found."})
-            session = self.mcp_session()
-            if session is not None:
-                del mcp_sessions[session[0]]
-                return self.respond(200)
+            with state_lock:
+                session = self.mcp_session()
+                if session is not None:
+                    del mcp_sessions[session[0]]
+                    return self.respond(200)
 
         def handle_mcp(self, data):
             try:
@@ -174,15 +182,17 @@ def make_handler():
                     error = rpc_error(None, -32700, "Parse error.") if path == "/mcp" else {"error": "Invalid JSON."}
                     return self.respond(400, error)
                 if path == "/mcp":
-                    return self.handle_mcp(data)
+                    with state_lock:
+                        return self.handle_mcp(data)
                 if not isinstance(data, dict):
                     raise ValueError("Expected a JSON object.")
                 action = data.get("action")
                 if not isinstance(action, str):
                     raise ValueError("Action is required.")
-                engine = self.session()
-                result = engine.handle(action, data)
-                return self.respond(200, {"state": engine.snapshot(), "result": result})
+                with state_lock:
+                    engine = self.session()
+                    result = engine.handle(action, data)
+                    return self.respond(200, {"state": engine.snapshot(), "result": result})
             except (ValueError, KeyError, TypeError) as exc:
                 return self.respond(400, {"error": str(exc)})
             except Exception:
@@ -197,12 +207,17 @@ def make_handler():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--port", type=int, default=8011)
+    parser.add_argument("--port", type=int, default=int(os.environ.get("PORT", 8011)))
+    parser.add_argument("--host", default="127.0.0.1", help="Bind address; use 0.0.0.0 only behind a hosting proxy.")
+    parser.add_argument("--public-host", default=os.environ.get("PUBLIC_HOST") or os.environ.get("RENDER_EXTERNAL_HOSTNAME"),
+                        help="Public hostname to accept in addition to localhost (set automatically on Render).")
     args = parser.parse_args()
     if not 1024 <= args.port <= 65535:
         parser.error("Choose a port from 1024 to 65535.")
-    server = HTTPServer(("127.0.0.1", args.port), make_handler())
-    print(f"Local prototype: http://127.0.0.1:{args.port} — Ctrl-C to stop.", flush=True)
+    server = ThreadingHTTPServer((args.host, args.port), make_handler(args.public_host))
+    server.daemon_threads = True
+    where = f"https://{args.public_host}" if args.public_host else f"http://127.0.0.1:{args.port}"
+    print(f"Resume: {where} — Ctrl-C to stop.", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

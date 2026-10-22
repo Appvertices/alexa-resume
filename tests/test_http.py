@@ -44,3 +44,22 @@ class HTTPContract(unittest.TestCase):
         a=self.request();b=self.request()
         self.assertNotEqual(a[2]["Set-Cookie"],b[2]["Set-Cookie"])
 
+
+class PublicHost(unittest.TestCase):
+    """A configured public hostname (e.g. a Render demo) is accepted over HTTPS; everything else is still rejected."""
+    @classmethod
+    def setUpClass(cls):
+        cls.server=HTTPServer(("127.0.0.1",0),make_handler("resume-demo.example"))
+        cls.thread=threading.Thread(target=cls.server.serve_forever,daemon=True);cls.thread.start()
+    @classmethod
+    def tearDownClass(cls):
+        cls.server.shutdown();cls.server.server_close();cls.thread.join(timeout=2)
+    def status(self,headers):
+        conn=http.client.HTTPConnection("127.0.0.1",self.server.server_port,timeout=4)
+        conn.request("GET","/",headers=headers);r=conn.getresponse();r.read();conn.close();return r.status
+    def test_public_host_and_https_origin_allowed(self):
+        self.assertEqual(self.status({"Host":"resume-demo.example","Origin":"https://resume-demo.example"}),200)
+    def test_other_hosts_and_plain_http_origin_rejected(self):
+        self.assertEqual(self.status({"Host":"attacker.example"}),403)
+        self.assertEqual(self.status({"Host":"resume-demo.example","Origin":"http://resume-demo.example"}),403)
+        self.assertEqual(self.status({"Host":"resume-demo.example","Origin":"https://attacker.example"}),403)

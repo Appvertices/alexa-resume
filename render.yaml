@@ -1,0 +1,11 @@
+# Render Blueprint: a free public demo of Resume. No packages to install.
+# Render sets PORT and RENDER_EXTERNAL_HOSTNAME; the server accepts only that hostname (plus localhost).
+services:
+  - type: web
+    name: alexa-resume
+    runtime: python
+    plan: free
+    buildCommand: echo "No build step"
+    startCommand: python server.py --host 0.0.0.0
+    healthCheckPath: /
+    autoDeploy: true
